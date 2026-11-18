@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.lesson.memo.model.Memo;
@@ -31,15 +32,22 @@ public class MemoController {
     private MemoRepository memoRepository;
 
     @GetMapping
-    public String list(Model model) {
-        List<Memo> memos = memoRepository.findAll();
+    public String list(Model model,
+    		@RequestParam(name = "keyword", required = false) String keyword) {
+    	List<Memo> memos;
+		if(keyword == null || keyword.isEmpty()) {
+			memos = memoRepository.findAll();	
+		}else {
+			memos = memoRepository.findByTitleContainingOrContentContaining(keyword, keyword);
+		}
         memos.sort(Comparator.comparing(Memo::getPriority));
         model.addAttribute("memos", memos);
+        model.addAttribute("keyword", keyword);
         return "memo-list";
     }
 
     @GetMapping("/new")
-    public String showForm(Model model) {
+    public String showForm(Model model)	{
         model.addAttribute("memo", new Memo());
         model.addAttribute("priorities", Priority.values());//最初にフォームを開くとき、選択肢を表示するため
         return "memo-form";//入力画面出力

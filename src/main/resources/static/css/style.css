@@ -49,6 +49,15 @@ body {
   margin-bottom: 2rem;
 }
 
+.text-search {
+	margin-bottom: 2rem;
+}
+.search-area {
+	display:flex;
+	white-space: nowrap;
+	gap: 0.5rem;
+}
+
 .app-title {
   font-size: 2.25rem;
   font-weight: 700;
